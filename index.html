@@ -97,12 +97,55 @@ button.primary:hover{filter:brightness(1.08)}
 .src{margin-top:18px;font-size:.78rem;color:var(--muted)}
 .src ul{margin:4px 0 0;padding-left:1.1em}
 .sign{display:none}
-@media (max-width:560px){.vx{grid-template-columns:1fr}.report{padding:16px}fieldset{padding:14px}}
+/* Checked rows are highlighted so selections are easy to scan */
+.chk:has(input:checked){background:var(--funded-bg)}
+.chk:has(input:checked) > span{font-weight:600}
+/* Generate bar and results toolbar stay reachable while scrolling */
+.actions{position:sticky;bottom:0;z-index:5;background:var(--bg);border-top:1px solid var(--line);
+  padding:12px 0 calc(12px + env(safe-area-inset-bottom, 0px));margin-top:4px}
+.toolbar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--bg);padding-block:10px;margin-top:-10px}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding-block:14px 0}
+  h1{font-size:1.45rem}
+  .sub{font-size:.88rem}
+  .top{margin-bottom:14px}
+  .top .btns{width:100%}
+  .top .btns button{flex:1}
+  fieldset{padding:12px 10px 14px;border-radius:8px;margin-bottom:12px}
+  legend{font-size:1.05rem}
+  .grid,.checks{grid-template-columns:1fr;gap:10px}
+  .checks{gap:0}
+  /* Full-width tap rows with dividers, 48px minimum target */
+  .chk{min-height:48px;align-items:center;padding:10px 8px;border-radius:0;border-bottom:1px solid var(--line)}
+  .chk:last-child{border-bottom:0}
+  .chk input{width:22px;height:22px;margin-top:0}
+  .chk small{font-size:.82rem}
+  /* 16px inputs prevent iOS auto-zoom on focus */
+  input[type=text],input[type=date],select{font-size:16px;min-height:46px;padding:10px 12px}
+  .field label{font-size:.95rem}
+  button{min-height:46px;padding:10px 16px}
+  .actions{flex-direction:column-reverse;align-items:stretch;gap:6px}
+  .actions button{width:100%;font-size:1.02rem}
+  .actions .err:empty{display:none}
+  .toolbar{gap:8px}
+  .toolbar button{flex:1 1 0;min-width:0;padding-inline:8px}
+  .toolbar .note{flex-basis:100%;font-size:.8rem}
+  .report{padding:14px;border-radius:8px}
+  .rhead{flex-direction:column;gap:10px}
+  .ghead{padding:8px 10px}
+  .ghead h2{font-size:1.02rem}
+  .vx{grid-template-columns:1fr;gap:6px;padding:12px 4px}
+  .vx li{margin-bottom:4px}
+  .done-list{padding:10px 4px}
+  .notes ul{font-size:.92rem}
+}
 
 @media print{
   :root{--bg:#fff;--surface:#fff;--ink:#000;--muted:#444;--line:#bbb}
   body{background:#fff;font-size:11pt}
-  #formView,.toolbar{display:none!important}
+  #formView,.toolbar,.actions{display:none!important}
   .wrap{max-width:none;padding:0}
   .report{border:0;padding:0}
   .ghead{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -139,16 +182,16 @@ button.primary:hover{filter:brightness(1.08)}
     <fieldset>
       <legend>Status and setting</legend>
       <div class="checks">
-        <label class="chk"><input type="checkbox" id="preg"><span>Currently pregnant</span></label>
-        <label class="chk"><input type="checkbox" id="indig"><span>Indigenous (First Nations, Métis, Inuit)</span></label>
-        <label class="chk" data-show="fnhb"><input type="checkbox" id="fnhb"><span>First Nations Health Benefits client<small>FNHA coverage for Shingrix (60+) and RSV in pregnancy</small></span></label>
-        <label class="chk"><input type="checkbox" id="ltc"><span>Resident of long-term care or assisted living</span></label>
-        <label class="chk"><input type="checkbox" id="hcw"><span>Health care worker or student</span></label>
-        <label class="chk"><input type="checkbox" id="lab"><span>Laboratory worker<small>Handles clinical or research specimens / cultures</small></span></label>
-        <label class="chk"><input type="checkbox" id="food"><span>Food handler</span></label>
-        <label class="chk"><input type="checkbox" id="welder"><span>Welder / long-term metal fume exposure</span></label>
         <label class="chk"><input type="checkbox" id="smoker"><span>Current smoker</span></label>
+        <label class="chk"><input type="checkbox" id="preg"><span>Currently pregnant</span></label>
+        <label class="chk" data-show="fnhb"><input type="checkbox" id="fnhb"><span>First Nations Health Benefits client<small>FNHA coverage for Shingrix (60+) and RSV in pregnancy</small></span></label>
+        <label class="chk"><input type="checkbox" id="food"><span>Food handler</span></label>
+        <label class="chk"><input type="checkbox" id="hcw"><span>Health care worker or student</span></label>
+        <label class="chk"><input type="checkbox" id="indig"><span>Indigenous (First Nations, Métis, Inuit)</span></label>
         <label class="chk"><input type="checkbox" id="travel"><span>International travel planned</span></label>
+        <label class="chk"><input type="checkbox" id="lab"><span>Laboratory worker<small>Handles clinical or research specimens / cultures</small></span></label>
+        <label class="chk"><input type="checkbox" id="ltc"><span>Resident of long-term care or assisted living</span></label>
+        <label class="chk"><input type="checkbox" id="welder"><span>Welder / long-term metal fume exposure</span></label>
       </div>
     </fieldset>
 
@@ -156,35 +199,35 @@ button.primary:hover{filter:brightness(1.08)}
       <legend>Medical conditions</legend>
       <p class="hint">Check all that apply. Only conditions that change vaccine eligibility are listed.</p>
       <div class="checks">
-        <label class="chk"><input type="checkbox" id="asplenia"><span>Asplenia or splenic dysfunction<small>Incl. sickle cell disease, complement deficiency</small></span></label>
-        <label class="chk"><input type="checkbox" id="immuno"><span>Immunocompromised<small>Congenital immunodeficiency, or immunosuppressive therapy (steroids, chemo, biologics) now, planned, or within 2 years</small></span></label>
-        <label class="chk"><input type="checkbox" id="hiv"><span>HIV infection</span></label>
         <label class="chk"><input type="checkbox" id="malig"><span>Active malignancy<small>Incl. leukemia, lymphoma</small></span></label>
-        <label class="chk"><input type="checkbox" id="hsct"><span>Hematopoietic stem cell transplant or CAR-T<small>Recipient (within 2 years or still immunosuppressed)</small></span></label>
-        <label class="chk"><input type="checkbox" id="sot"><span>Solid organ or islet cell transplant<small>Candidate or recipient</small></span></label>
-        <label class="chk"><input type="checkbox" id="lungtx"><span>Lung transplant recipient</span></label>
-        <label class="chk"><input type="checkbox" id="ckd"><span>Chronic kidney disease</span></label>
-        <label class="chk"><input type="checkbox" id="dialysis"><span>Receiving dialysis</span></label>
-        <label class="chk"><input type="checkbox" id="liver"><span>Chronic liver disease<small>Incl. cirrhosis, chronic hepatitis B, anti-HCV positive</small></span></label>
-        <label class="chk"><input type="checkbox" id="heart"><span>Chronic heart disease<small>Requiring regular medication or follow-up</small></span></label>
-        <label class="chk"><input type="checkbox" id="lung"><span>Chronic lung disease<small>Incl. asthma needing acute care in past 12 months</small></span></label>
-        <label class="chk"><input type="checkbox" id="o2"><span>Home oxygen / chronic oxygen therapy</span></label>
-        <label class="chk"><input type="checkbox" id="diabetes"><span>Diabetes mellitus</span></label>
-        <label class="chk"><input type="checkbox" id="neuro"><span>Chronic neurological condition<small>That may impair clearance of oral secretions</small></span></label>
+        <label class="chk"><input type="checkbox" id="asplenia"><span>Asplenia or splenic dysfunction<small>Incl. sickle cell disease, complement deficiency</small></span></label>
         <label class="chk"><input type="checkbox" id="csf"><span>Chronic CSF leak or cochlear implant</span></label>
+        <label class="chk"><input type="checkbox" id="heart"><span>Chronic heart disease<small>Requiring regular medication or follow-up</small></span></label>
+        <label class="chk"><input type="checkbox" id="ckd"><span>Chronic kidney disease</span></label>
+        <label class="chk"><input type="checkbox" id="liver"><span>Chronic liver disease<small>Incl. cirrhosis, chronic hepatitis B, anti-HCV positive</small></span></label>
+        <label class="chk"><input type="checkbox" id="lung"><span>Chronic lung disease<small>Incl. asthma needing acute care in past 12 months</small></span></label>
+        <label class="chk"><input type="checkbox" id="neuro"><span>Chronic neurological condition<small>That may impair clearance of oral secretions</small></span></label>
         <label class="chk"><input type="checkbox" id="cf"><span>Cystic fibrosis</span></label>
+        <label class="chk"><input type="checkbox" id="diabetes"><span>Diabetes mellitus</span></label>
+        <label class="chk"><input type="checkbox" id="hsct"><span>Hematopoietic stem cell transplant or CAR-T<small>Recipient (within 2 years or still immunosuppressed)</small></span></label>
         <label class="chk"><input type="checkbox" id="hemo"><span>Hemophilia / repeated blood product infusions</span></label>
+        <label class="chk"><input type="checkbox" id="hiv"><span>HIV infection</span></label>
+        <label class="chk"><input type="checkbox" id="o2"><span>Home oxygen / chronic oxygen therapy</span></label>
+        <label class="chk"><input type="checkbox" id="immuno"><span>Immunocompromised<small>Congenital immunodeficiency, or immunosuppressive therapy (steroids, chemo, biologics) now, planned, or within 2 years</small></span></label>
+        <label class="chk"><input type="checkbox" id="lungtx"><span>Lung transplant recipient</span></label>
+        <label class="chk"><input type="checkbox" id="dialysis"><span>Receiving dialysis</span></label>
+        <label class="chk"><input type="checkbox" id="sot"><span>Solid organ or islet cell transplant<small>Candidate or recipient</small></span></label>
       </div>
     </fieldset>
 
     <fieldset>
       <legend>Other risk factors</legend>
       <div class="checks">
-        <label class="chk"><input type="checkbox" id="sud"><span>Substance use disorder<small>Alcohol, cocaine, injection or other illicit drug use</small></span></label>
         <label class="chk"><input type="checkbox" id="homeless"><span>Experiencing homelessness or underhoused</span></label>
         <label class="chk"><input type="checkbox" id="msm"><span>Man who has sex with men</span></label>
-        <label class="chk"><input type="checkbox" id="tgd"><span>Two-Spirit, transgender or non-binary</span></label>
         <label class="chk"><input type="checkbox" id="multi"><span>Multiple sexual partners or recent STI</span></label>
+        <label class="chk"><input type="checkbox" id="sud"><span>Substance use disorder<small>Alcohol, cocaine, injection or other illicit drug use</small></span></label>
+        <label class="chk"><input type="checkbox" id="tgd"><span>Two-Spirit, transgender or non-binary</span></label>
       </div>
     </fieldset>
 
@@ -192,16 +235,15 @@ button.primary:hover{filter:brightness(1.08)}
       <legend>Immunization history</legend>
       <p class="hint">Questions appear only when they affect a recommendation. Treat undocumented doses as not received.</p>
       <div class="grid">
-        <div class="field"><label for="h_flu">Influenza, 2026/27 season</label><select id="h_flu"><option value="no">Not yet received</option><option value="yes">Received</option></select></div>
         <div class="field"><label for="h_covid">COVID-19, 2026/27 formulation</label><select id="h_covid"><option value="no">Not yet received</option><option value="yes">Received</option></select></div>
-        <div class="field"><label for="h_td">Last tetanus-diphtheria (Td/Tdap)</label><select id="h_td"><option value="unknown">Unknown</option><option value="recent">Within the last 10 years</option><option value="old">More than 10 years ago</option><option value="never">Primary series never completed</option></select></div>
-        <div class="field"><label for="h_pert">Pertussis (whooping cough)</label><select id="h_pert"><option value="child">Childhood doses only, none as adult</option><option value="adult">Tdap received as an adult</option><option value="never">Never immunized / history unknown</option></select></div>
-        <div class="field" data-show="mmr"><label for="h_mmr">MMR doses documented</label><select id="h_mmr"><option value="unk">Unknown / none documented</option><option value="1">1 dose</option><option value="2">2 doses</option></select></div>
-        <div class="field"><label for="h_var">Varicella immunity</label><select id="h_var"><option value="yes">Immune (past chickenpox/shingles, 2 doses, or positive serology)</option><option value="no">No evidence of immunity</option></select></div>
-        <div class="field" data-show="hepb"><label for="h_hepb">Hepatitis B vaccine</label><select id="h_hepb"><option value="no">Not received / unknown</option><option value="partial">Series started, not finished</option><option value="complete">Series complete or immune</option></select></div>
         <div class="field" data-show="hepa"><label for="h_hepa">Hepatitis A vaccine</label><select id="h_hepa"><option value="no">Not received / unknown</option><option value="partial">1 dose only</option><option value="complete">Series complete or immune</option></select></div>
+        <div class="field" data-show="hepb"><label for="h_hepb">Hepatitis B vaccine</label><select id="h_hepb"><option value="no">Not received / unknown</option><option value="partial">Series started, not finished</option><option value="complete">Series complete or immune</option></select></div>
         <div class="field" data-show="hpv"><label for="h_hpv">HPV vaccine</label><select id="h_hpv"><option value="no">Not received / unknown</option><option value="partial">Series started, not finished</option><option value="complete">Series complete</option></select></div>
+        <div class="field"><label for="h_flu">Influenza, 2026/27 season</label><select id="h_flu"><option value="no">Not yet received</option><option value="yes">Received</option></select></div>
+        <div class="field"><label for="h_td">Last tetanus-diphtheria (Td/Tdap)</label><select id="h_td"><option value="unknown">Unknown</option><option value="recent">Within the last 10 years</option><option value="old">More than 10 years ago</option><option value="never">Primary series never completed</option></select></div>
         <div class="field" data-show="menq"><label for="h_menq">Meningococcal quadrivalent (ACYW)</label><select id="h_menq"><option value="no">Not received / unknown</option><option value="yes">Received</option></select></div>
+        <div class="field" data-show="mmr"><label for="h_mmr">MMR doses documented</label><select id="h_mmr"><option value="unk">Unknown / none documented</option><option value="1">1 dose</option><option value="2">2 doses</option></select></div>
+        <div class="field"><label for="h_pert">Pertussis (whooping cough)</label><select id="h_pert"><option value="child">Childhood doses only, none as adult</option><option value="adult">Tdap received as an adult</option><option value="never">Never immunized / history unknown</option></select></div>
         <div class="field" data-show="pneumo"><label for="h_pneumo">Previous pneumococcal vaccines</label><select id="h_pneumo">
           <option value="none">None / unknown</option>
           <option value="ppv1">PPV23 × 1 only</option>
@@ -214,6 +256,7 @@ button.primary:hover{filter:brightness(1.08)}
         </select></div>
         <div class="field" data-show="rsv"><label for="h_rsv">RSV vaccine (adult dose)</label><select id="h_rsv"><option value="no">Never received</option><option value="yes">Received</option></select></div>
         <div class="field" data-show="shx"><label for="h_shx">Shingrix (recombinant zoster)</label><select id="h_shx"><option value="0">Not received</option><option value="1">1 dose</option><option value="2">2 doses (complete)</option></select></div>
+        <div class="field"><label for="h_var">Varicella immunity</label><select id="h_var"><option value="yes">Immune (past chickenpox/shingles, 2 doses, or positive serology)</option><option value="no">No evidence of immunity</option></select></div>
       </div>
     </fieldset>
 

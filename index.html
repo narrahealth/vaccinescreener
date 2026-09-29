@@ -26,6 +26,8 @@
   --warn:#f28c82; --warn-bg:#3b201e; --done:#aab8c0; --done-bg:#1f2b32; color-scheme:dark}
 
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-x:hidden;overflow-wrap:break-word}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
 .wrap{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:24px 64px}
 h1,h2,h3{text-wrap:balance;margin:0}
@@ -35,18 +37,22 @@ h1{font-size:1.75rem;font-weight:800;letter-spacing:-.01em}
 .top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
 .top .btns{display:flex;gap:8px;flex-wrap:wrap}
 
-fieldset{border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:0 0 16px;padding:18px 18px 20px}
+fieldset{min-width:0;min-inline-size:0;max-width:100%;border:1px solid var(--line);background:var(--surface);border-radius:10px;margin:0 0 16px;padding:18px 18px 20px}
 legend{padding:0 6px;font-weight:700;font-size:1rem}
 .hint{color:var(--muted);font-size:.85rem;margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(230px,100%),1fr));gap:12px 16px}
 .field{display:flex;flex-direction:column;gap:4px;min-width:0}
 .field label{font-weight:600;font-size:.88rem}
 .field .opt{font-weight:400;color:var(--muted)}
-input[type=text],input[type=date],select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+input[type=text],input[type=date],select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;max-width:100%;min-width:0;display:block}
+select{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
+input[type=date]{-webkit-appearance:none;appearance:none;min-height:40px;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
+input[type=date]::-webkit-calendar-picker-indicator{margin-left:auto}
 input.mono{font-family:var(--f-mono)}
 input:focus-visible,select:focus-visible,button:focus-visible,.chk input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:6px 16px}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:6px 16px}
 .chk{display:flex;gap:10px;align-items:flex-start;padding:7px 8px;border-radius:6px;cursor:pointer}
 .chk:hover{background:var(--bg)}
 .chk input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent);flex:none}
@@ -68,7 +74,7 @@ button.primary:hover{filter:brightness(1.08)}
 .toolbar .note{color:var(--muted);font-size:.85rem;flex:1 1 240px}
 .report{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:24px}
 .rhead{display:flex;flex-wrap:wrap;gap:12px 32px;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:18px}
-.pt{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;font-size:.92rem}
+.pt{display:grid;grid-template-columns:auto minmax(0,1fr);margin:0;gap:2px 14px;font-size:.92rem}
 .pt dt{color:var(--muted)}
 .pt dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
 .pt dd.mono{font-family:var(--f-mono);font-weight:500}
@@ -115,7 +121,13 @@ button.primary:hover{filter:brightness(1.08)}
   .top .btns button{flex:1}
   fieldset{padding:12px 10px 14px;border-radius:8px;margin-bottom:12px}
   legend{font-size:1.05rem}
-  .grid,.checks{grid-template-columns:1fr;gap:10px}
+  .grid,.checks{grid-template-columns:minmax(0,1fr);gap:10px}
+  .pt{grid-template-columns:minmax(0,1fr);gap:0;background:var(--bg);border-radius:6px;padding:10px 12px}
+  .pt dt{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
+  .pt dd{margin-bottom:8px;overflow-wrap:anywhere}
+  .pt dd:last-child{margin-bottom:0}
+  .toolbar button{white-space:nowrap;font-size:.95rem}
+  .rhead > div,.rhead .pt{width:100%}
   .checks{gap:0}
   /* Full-width tap rows with dividers, 48px minimum target */
   .chk{min-height:48px;align-items:center;padding:10px 8px;border-radius:0;border-bottom:1px solid var(--line)}
@@ -162,7 +174,7 @@ button.primary:hover{filter:brightness(1.08)}
     <div>
       <div class="eyebrow">British Columbia · Adults 18+</div>
       <h1>Adult Vaccine Screener</h1>
-      <p class="sub">Eligibility per BCCDC Immunization Manual and NACI guidance, current to September 2026. v.1.2</p>
+      <p class="sub">Eligibility per BCCDC Immunization Manual and NACI guidance, current to September 2026.</p>
     </div>
     <div class="btns">
       <button type="button" id="clearBtn">Clear form</button>
@@ -243,7 +255,7 @@ button.primary:hover{filter:brightness(1.08)}
         <div class="field"><label for="h_td">Last tetanus-diphtheria (Td/Tdap)</label><select id="h_td"><option value="unknown">Unknown</option><option value="recent">Within the last 10 years</option><option value="old">More than 10 years ago</option><option value="never">Primary series never completed</option></select></div>
         <div class="field" data-show="menq"><label for="h_menq">Meningococcal quadrivalent (ACYW)</label><select id="h_menq"><option value="no">Not received / unknown</option><option value="yes">Received</option></select></div>
         <div class="field" data-show="mmr"><label for="h_mmr">MMR doses documented</label><select id="h_mmr"><option value="unk">Unknown / none documented</option><option value="1">1 dose</option><option value="2">2 doses</option></select></div>
-        <div class="field"><label for="h_pert">Pertussis (whooping cough)</label><select id="h_pert"><option value="child">Childhood doses only, none as adult</option><option value="adult">Tdap received as an adult</option><option value="never">Never immunized / history unknown</option></select></div>
+        <div class="field"><label for="h_pert">Pertussis (whooping cough)</label><select id="h_pert"><option value="child">Childhood only, none as adult</option><option value="adult">Tdap received as an adult</option><option value="never">Never immunized / history unknown</option></select></div>
         <div class="field" data-show="pneumo"><label for="h_pneumo">Previous pneumococcal vaccines</label><select id="h_pneumo">
           <option value="none">None / unknown</option>
           <option value="ppv1">PPV23 × 1 only</option>
@@ -256,7 +268,7 @@ button.primary:hover{filter:brightness(1.08)}
         </select></div>
         <div class="field" data-show="rsv"><label for="h_rsv">RSV vaccine (adult dose)</label><select id="h_rsv"><option value="no">Never received</option><option value="yes">Received</option></select></div>
         <div class="field" data-show="shx"><label for="h_shx">Shingrix (recombinant zoster)</label><select id="h_shx"><option value="0">Not received</option><option value="1">1 dose</option><option value="2">2 doses (complete)</option></select></div>
-        <div class="field"><label for="h_var">Varicella immunity</label><select id="h_var"><option value="yes">Immune (past chickenpox/shingles, 2 doses, or positive serology)</option><option value="no">No evidence of immunity</option></select></div>
+        <div class="field"><label for="h_var">Varicella immunity</label><select id="h_var"><option value="yes">Immune (history, 2 doses, or serology)</option><option value="no">No evidence of immunity</option></select></div>
       </div>
     </fieldset>
 
@@ -269,8 +281,8 @@ button.primary:hover{filter:brightness(1.08)}
 
 <section id="resView" hidden>
   <div class="toolbar">
-    <button type="button" id="backBtn">← Back to revise</button>
-    <button type="button" class="primary" id="printBtn" hidden>Print / Save as PDF</button>
+    <button type="button" id="backBtn">← Back</button>
+    <button type="button" class="primary" id="printBtn" hidden>Print / PDF</button>
     <span class="note" id="printNote"></span>
   </div>
   <div class="report" id="report"></div>
